@@ -1,6 +1,6 @@
-# Ready Tensor Agentic AI Certification – Week 5
+# Ready Tensor Agentic AI Certification – Unit 5
 
-This repository contains lesson materials, code examples, reference scripts for **Week 5** of the [Agentic AI Developer Certification Program](https://app.readytensor.ai/publications/HrJ0xWtLzLNt) by Ready Tensor. This week marks the transition from traditional prompt pipelines to building **agent-based AI systems** using tools like **LangGraph**, **LangChain**, and **LangSmith**.
+This repository contains lesson materials, code examples, reference scripts for **Unit 5** of the [Agentic AI Developer Certification Program](https://app.readytensor.ai/publications/HrJ0xWtLzLNt) by Ready Tensor. This week marks the transition from traditional prompt pipelines to building **agent-based AI systems** using tools like **LangGraph**, **LangChain**, and **LangSmith**.
 
 ---
 
@@ -49,7 +49,7 @@ Build your own tools from scratch and register them with your agent. Extend func
 ## Repository Structure
 
 ```txt
-rt-agentic-ai-cert-week5/
+rt-agentic-ai-cert-unit5/
 ├── code/
 │   ├── custom_tools.py                         # Custom tool implementations for Lesson 3b
 │   ├── llm.py                                  # LLM utility wrapper
