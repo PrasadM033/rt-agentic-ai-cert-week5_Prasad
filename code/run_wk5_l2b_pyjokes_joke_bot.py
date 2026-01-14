@@ -22,9 +22,9 @@ class JokeState(BaseModel):
     """
 
     jokes: Annotated[List[Joke], add] = []  # Using built-in add operator
-    jokes_choice: Literal["n", "c", "q"] = "n"  # next, change, quit
+    jokes_choice: Literal["n", "c", "l", "q"] = "n"  # next, change, quit
     category: str = "neutral"
-    language: str = "en"
+    language: Literal["en", "de", "es"] = "de"
     quit: bool = False
 
 
@@ -66,16 +66,29 @@ def show_menu(state: JokeState) -> dict:
     print_menu_header(state.category, len(state.jokes))
     print("Pick an option:")
     user_input = get_user_input(
-        "[n] 🎭 Next Joke  [c] 📂 Change Category  [q] 🚪 Quit\nUser Input: "
+        "[n] 🎭 Next Joke  [c] 📂 Change Category [l]Change language [q] 🚪 Quit\nUser Input: "
     )
-    while user_input not in ["n", "c", "q"]:
+    while user_input not in ["n", "c", "l", "q"]:
         print("❌ Invalid input. Please try again.")
         user_input = get_user_input(
-            "[n] 🎭 Next Joke  [c] 📂 Change Category  [q] 🚪 Quit\n    User Input: "
+            "[n] 🎭 Next Joke  [c] 📂 Change Category [l]Change language [q] 🚪 Quit\nUser Input: "
         )
+    
     return {"jokes_choice": user_input}
 
-
+def update_language(state: JokeState)->dict:
+    print("🌐 LANGUAGE SELECTION")
+    print("-" * 50)
+    print("Pick an language:")
+    user_input = get_user_input(
+        "[en] English  [de] Germany [es Spanish\nUser Input: "
+    )
+    while user_input not in ["en", "de", "es"]:
+        print("❌ Invalid input. Please try again.")
+        user_input = get_user_input(
+        "[en] English  [de] Germany [es Spanish\nUser Input: ")
+    
+    return {"language": user_input}
 def fetch_joke(state: JokeState) -> dict:
     joke_text = get_joke(language=state.language, category=state.category)
     new_joke = Joke(text=joke_text, category=state.category)
@@ -123,11 +136,13 @@ def route_choice(state: JokeState) -> str:
         return "fetch_joke"
     elif state.jokes_choice == "c":
         return "update_category"
+    elif state.jokes_choice == "l":
+        return "update_language"
     elif state.jokes_choice == "q":
         return "exit_bot"
     else:
         return "exit_bot"
-
+    
 
 # ===================
 # Build Graph
@@ -139,7 +154,9 @@ def build_joke_graph() -> CompiledStateGraph:
 
     # Register nodes
     workflow.add_node("show_menu", show_menu)
+    workflow.add_node("update_language", update_language)
     workflow.add_node("fetch_joke", fetch_joke)
+ 
     workflow.add_node("update_category", update_category)
     workflow.add_node("exit_bot", exit_bot)
 
@@ -153,6 +170,7 @@ def build_joke_graph() -> CompiledStateGraph:
         {
             "fetch_joke": "fetch_joke",
             "update_category": "update_category",
+            "update_language": "update_language",
             "exit_bot": "exit_bot",
         },
     )
@@ -160,6 +178,7 @@ def build_joke_graph() -> CompiledStateGraph:
     # Define transitions
     workflow.add_edge("fetch_joke", "show_menu")
     workflow.add_edge("update_category", "show_menu")
+    workflow.add_edge("update_language", "show_menu")
     workflow.add_edge("exit_bot", END)
 
     return workflow.compile()
@@ -178,8 +197,8 @@ def main():
 
     graph = build_joke_graph()
 
-    # print("\n📊 === MERMAID DIAGRAM ===")
-    # print(graph.get_graph().draw_mermaid())
+    print("\n📊 === MERMAID DIAGRAM ===")
+    print(graph.get_graph().draw_mermaid())
 
     print("\n" + "🚀" + "=" * 58 + "🚀")
     print("    STARTING JOKE BOT SESSION...")
